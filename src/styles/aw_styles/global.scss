@@ -1,0 +1,20 @@
+/**
+ * Global style entry file
+ */
+
+/* CSS variables */
+@use 'variables-css/colors';
+@use 'variables-css/fonts';
+
+/* Global classes */
+@use 'site/base';
+@use 'site/text';
+
+/* Utility classes */
+@use 'utilities/visibility';
+
+/* Import */
+
+@import '../../../public/fonts/bigger-display.css';
+@import '../../../public/fonts/editorial-new.css';
+@import '../../../public/fonts/fraktion-mono.css';

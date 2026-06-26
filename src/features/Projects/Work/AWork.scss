@@ -1,0 +1,67 @@
+@use "../../../styles/aw_styles/_import.scss" as *;
+
+a-work {
+  position: relative;
+  top: 0;
+  left: 0;
+
+  display: block;
+  margin: 0;
+  padding: 0.5rem 0.5rem 0;
+
+  background: var(--ink);
+  content-visibility: hidden;
+
+  transform-style: preserve-3d;
+
+  will-change: transform;
+
+  @include mq(phone) {
+    padding: 0.25rem;
+  }
+
+  a {
+    display: block;
+    text-decoration: none;
+  }
+
+  .a__inner {
+    display: block;
+    margin: 0;
+    padding: 0;
+  }
+
+  .a__video {
+    display: block;
+
+    width: auto;
+    max-width: 50vw;
+    height: auto;
+    max-height: 50vh;
+
+    @include mq(phone) {
+      max-width: 80vw;
+      max-height: 80vh;
+    }
+  }
+
+  .a__caption {
+    @include flex(row, center, space-between);
+
+    padding: 0.5rem 0.5rem;
+
+    color: var(--paper);
+    font: 700 11px / 1 font-family(fraktion);
+    letter-spacing: 0.15em;
+    text-align: right;
+    text-transform: uppercase;
+
+    @include mq(phone) {
+      display: none;
+    }
+  }
+
+  &.is-inview {
+    content-visibility: visible;
+  }
+}
