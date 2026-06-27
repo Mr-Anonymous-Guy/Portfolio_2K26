@@ -17,8 +17,8 @@ Welcome to the public source of my personal portfolio. I am Tutun Mahapatra, als
 To run the project locally, follow these steps:
 
 ```bash
-git clone <repo-url>
-cd <repo-name>
+git clone https://github.com/Mr-Anonymous-Guy/Portfolio_2K26
+cd Portfolio_2K26
 
 npm install
 
