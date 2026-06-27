@@ -4,13 +4,16 @@ import { SmoothScroll } from "@/components/shared/SmoothScroll";
 import { Nav } from "@/components/shared/Nav/Nav";
 import { Loader } from "@/features/Loader";
 import { SourceHero } from "@/features/Hero/SourceHero";
-import { SourceMarquee } from "@/components/SourceMarquee";
 import { SourceIntroduction } from "@/features/Services/SourceIntroduction";
 import { SourceServices } from "@/features/Services/SourceServices";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const SWork = React.lazy(() => import("@/features/Projects/Work/SWork").then(m => ({ default: m.SWork })));
 const SMyWay = React.lazy(() => import("@/features/Projects/MyWay/SMyWay").then(m => ({ default: m.SMyWay })));
 const SCTA = React.lazy(() => import("@/features/Contact/CTA/SCTA"));
+
+gsap.registerPlugin(ScrollTrigger);
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -57,7 +60,6 @@ export const Route = createFileRoute("/")({
             "FastAPI",
             "React",
             "PostgreSQL",
-            "MySQL",
           ],
         }),
       },
@@ -75,17 +77,18 @@ function Index() {
       <main className="relative z-10">
         <div className="src-section">
           <SourceHero />
-          <SourceMarquee />
           <SourceIntroduction />
           <SourceServices />
         </div>
 
         {/* Remaining AW portfolio sections */}
-        <Suspense fallback={null}>
-          <SWork />
-          <SMyWay />
-          <SCTA />
-        </Suspense>
+        <div id="work-section-container" className="relative z-40 bg-background">
+          <Suspense fallback={null}>
+            <SWork />
+            <SMyWay />
+            <SCTA />
+          </Suspense>
+        </div>
       </main>
     </div>
   );

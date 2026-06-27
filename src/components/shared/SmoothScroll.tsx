@@ -14,12 +14,10 @@ export function SmoothScroll() {
     if (reduce) return;
 
     const lenis = new Lenis({
-      duration: 0.9,
-      easing: (t) => 1 - Math.pow(1 - t, 3),
       smoothWheel: true,
-      wheelMultiplier: 1.15,
-      touchMultiplier: 1.5,
-      lerp: 0.12,
+      wheelMultiplier: 1.0,
+      touchMultiplier: 1.2,
+      lerp: 0.08,             // Buttery smooth catchup glide
     });
 
     (window as any).lenis = lenis;

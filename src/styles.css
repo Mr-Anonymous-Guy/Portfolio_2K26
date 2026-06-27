@@ -298,6 +298,41 @@ html.lenis, html.lenis body { height: auto; }
   padding-inline: clamp(1rem, 4vw, 3rem);
 }
 
+/* === Cinematic fullscreen stacked panels styling === */
+.scene-panel {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.scene-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.src-section.has-transitions {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.src-section.has-transitions .scene-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100svh;
+  z-index: 1;
+  will-change: transform; /* hardware GPU acceleration */
+}
+
+.src-section.has-transitions .scene-1 { z-index: 10; }
+.src-section.has-transitions .scene-2 { z-index: 20; }
+.src-section.has-transitions .scene-3 { z-index: 30; }
+
 /* === Scoped wrapper for source sections to prevent variable leakage === */
 .src-section {
   --ink: var(--text-primary);
@@ -452,13 +487,15 @@ html.lenis, html.lenis body { height: auto; }
 /* === Initial hidden states for hero entrance timeline === */
 .hero__bg-text,
 #hero-portrait,
-.hero-word-line,
 #hero-title-main,
-#nav-local,
-#hero-card-1,
-#hero-card-2 {
+.hero-title-outline,
+.hero-desc-item,
+.hero-social-item,
+.hero-copyright {
   opacity: 0;
 }
 
-
+.hero-title-fill {
+  clip-path: inset(0 100% 0 0);
+}
 
