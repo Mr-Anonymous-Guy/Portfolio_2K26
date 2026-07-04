@@ -1,11 +1,8 @@
 import { useRef, useState } from "react";
 import { useGSAPContext } from "@/hooks/useGSAP";
 import { Asterisk, Arrow } from "@/features/Hero/SourceHero";
-
-const servicePaper = "/images/service-paper.jpg";
-const serviceBear = "/images/service-bear.jpg";
-const serviceCalendar = "/images/service-calendar.jpg";
-const serviceSphere = "/images/service-sphere.jpg";
+import Shuffle from "@/components/shared/Shuffle";
+import SplitText from "@/components/shared/SplitText";
 
 const X = ({ className = "" }: { className?: string }) => (
   <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -19,10 +16,30 @@ export function SourceServices() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   const items = [
-    { n: "01", title: "AI Applications", body: "Developing intelligent applications using Python, FastAPI, Machine Learning, Large Language Models and Retrieval-Augmented Generation (RAG) to solve real-world problems.", img: servicePaper },
-    { n: "02", title: "Full Stack Development", body: "Building modern, responsive and scalable web applications using React, Next.js, TypeScript, PostgreSQL and clean backend architecture.", img: serviceBear },
-    { n: "03", title: "Automation & APIs", body: "Creating REST APIs, backend services and intelligent automation workflows that improve productivity and connect modern applications.", img: serviceCalendar },
-    { n: "04", title: "Web & Mobile Design", body: "Crafted interfaces and motion that feel premium on every device and every screen.", img: serviceSphere },
+    { 
+      n: "01", 
+      title: "AI Systems & Agents", 
+      body: "From intelligent assistants to autonomous AI agents, I build systems that reason, retrieve knowledge, automate workflows, and solve real-world problems using modern AI stacks.",
+      technologies: ["Python", "FastAPI", "LangChain", "OpenAI", "Ollama", "Qdrant", "PostgreSQL"] 
+    },
+    { 
+      n: "02", 
+      title: "Full Stack Platforms", 
+      body: "Scalable web applications designed from backend architecture to polished user interfaces, built for performance, maintainability, and production deployment.",
+      technologies: ["Next.js", "React", "TypeScript", "Tailwind CSS", "FastAPI", "Docker", "PostgreSQL"] 
+    },
+    { 
+      n: "03", 
+      title: "Intelligent Automation", 
+      body: "Automate repetitive processes by connecting APIs, AI models, databases, and third-party services into efficient workflows that save time and reduce manual effort.",
+      technologies: ["REST APIs", "Webhooks", "Redis", "Cron Jobs", "Workers", "Integrations"] 
+    },
+    { 
+      n: "04", 
+      title: "Creative Technology", 
+      body: "Premium interactive experiences combining mathematics, procedural graphics, WebGL, and modern frontend engineering.",
+      technologies: ["Three.js", "React Three Fiber", "GLSL", "GSAP", "Framer Motion", "WebGPU (Learning)"] 
+    },
   ];
 
   // Stagger reveal on scroll
@@ -57,7 +74,7 @@ export function SourceServices() {
       );
   }, []);
 
-  // Accordion height expand/collapse
+  // Accordion height expand/collapse and stagger tech stack
   useGSAPContext(({ gsap, ScrollTrigger }) => {
     const root = containerRef.current;
     if (!root) return;
@@ -65,7 +82,7 @@ export function SourceServices() {
     const rows = root.querySelectorAll(".service-row");
     rows.forEach((rowEl, i) => {
       const panel = rowEl.querySelector(".service-panel") as HTMLElement;
-      const thumb = panel?.querySelector(".service-thumb");
+      const techPills = panel?.querySelectorAll(".tech-pill");
       
       if (i === openIndex) {
         // Expand
@@ -76,12 +93,16 @@ export function SourceServices() {
           ease: "power2.out",
           onComplete: () => ScrollTrigger.refresh(),
         });
-        if (thumb) {
-          gsap.fromTo(
-            thumb,
-            { x: 30, opacity: 0 },
-            { x: 0, opacity: 1, duration: 0.4, delay: 0.1 }
-          );
+        
+        if (techPills && techPills.length > 0) {
+          gsap.to(techPills, {
+            y: 0,
+            opacity: 1,
+            duration: 0.4,
+            stagger: 0.04,
+            ease: "power2.out",
+            delay: 0.1
+          });
         }
       } else {
         // Collapse
@@ -92,6 +113,15 @@ export function SourceServices() {
           ease: "power2.in",
           onComplete: () => ScrollTrigger.refresh(),
         });
+        
+        if (techPills && techPills.length > 0) {
+          gsap.to(techPills, {
+            y: 8,
+            opacity: 0,
+            duration: 0.2,
+            ease: "power2.in"
+          });
+        }
       }
     });
   }, [openIndex]);
@@ -104,16 +134,16 @@ export function SourceServices() {
           {/* Left Column: Title & Label */}
           <div className="lg:col-span-5 lg:sticky lg:top-12">
             <div className="service-label mb-6 flex items-center gap-3 text-xs uppercase tracking-[0.22em] text-text-secondary opacity-0">
-              <Asterisk className="h-3 w-3 text-accent" /> WHAT I DO
+              <Asterisk className="h-3 w-3 text-accent" /> <Shuffle text="WHAT I DO" tag="span" />
             </div>
             <h2 className="service-heading font-display text-[clamp(32px,5vw,72px)] leading-[1.05] opacity-0">
-              WHAT
+              <Shuffle text="WHAT" tag="span" />
               <br />
-              I CAN
+              <Shuffle text="I CAN" tag="span" />
               <br />
-              <span className="text-accent">BUILD</span>
+              <Shuffle text="BUILD" tag="span" className="text-accent" />
               <br />
-              FOR YOU
+              <Shuffle text="FOR YOU" tag="span" />
             </h2>
           </div>
 
@@ -124,42 +154,86 @@ export function SourceServices() {
               return (
                 <li
                   key={it.n}
-                  className={`service-row group border-b border-divider transition-all duration-500 ease-out ${
-                    isSelfOpen ? "border-b-transparent py-3" : "py-0"
+                  className={`service-row group relative border-b transition-all duration-500 ease-out ${
+                    isSelfOpen ? "border-b-transparent py-3" : "py-0 border-divider"
                   }`}
+                  onMouseEnter={() => {
+                    if (window.matchMedia("(hover: hover)").matches) {
+                      setOpenIndex(idx);
+                    }
+                  }}
+                  onMouseLeave={() => {
+                    if (window.matchMedia("(hover: hover)").matches) {
+                      setOpenIndex(null);
+                    }
+                  }}
                 >
+                  {/* Animated Divider line on hover */}
+                  <div className="absolute bottom-[-1px] left-0 h-px w-full bg-[var(--ember)] origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100 z-10 hidden md:block" />
+
                   <div
-                    className={`w-full cursor-pointer transition-all duration-500 ease-out ${
+                    role="button"
+                    tabIndex={0}
+                    aria-expanded={isSelfOpen}
+                    className={`w-full cursor-pointer transition-all duration-500 ease-out focus:outline-none ${
                       isSelfOpen
                         ? "bg-[var(--cocoa)] text-[var(--paper)] rounded-2xl p-5 md:p-6 shadow-lg"
-                        : "bg-transparent py-4 px-2 hover:bg-black/5"
+                        : "bg-transparent py-4 px-2"
                     }`}
-                    onClick={() => setOpenIndex(isSelfOpen ? null : idx)}
+                    onClick={() => {
+                      if (!window.matchMedia("(hover: hover)").matches) {
+                        setOpenIndex(isSelfOpen ? null : idx);
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        setOpenIndex(isSelfOpen ? null : idx);
+                      }
+                    }}
                   >
                     {/* Header Row */}
                     <div className="flex items-center justify-between gap-6">
                       <div className="flex items-center gap-6">
                         <span className={`text-sm tabular-nums transition-colors duration-300 ${
-                          isSelfOpen ? "text-[var(--paper)]/60" : "text-text-secondary"
+                          isSelfOpen ? "text-[var(--paper)]" : "text-text-secondary group-hover:text-text-primary"
                         }`}>
-                          {it.n}
+                          <SplitText
+                            text={it.n}
+                            delay={30}
+                            duration={0.4}
+                            ease="power3.out"
+                            splitType="chars"
+                            from={{ opacity: 0, y: 10 }}
+                            to={{ opacity: 1, y: 0 }}
+                          />
                         </span>
-                        <h3 className={`font-display text-xl md:text-2xl transition-colors duration-300 ${
-                          isSelfOpen ? "text-[var(--paper)]" : "text-text-primary"
+                        <h3 className={`font-display text-xl md:text-2xl transition-all duration-300 ${
+                          isSelfOpen ? "text-[var(--paper)] translate-x-2" : "text-text-primary group-hover:translate-x-1"
                         }`}>
-                          {it.title}
+                          <SplitText
+                            text={it.title}
+                            delay={15}
+                            duration={0.6}
+                            ease="power3.out"
+                            splitType="chars"
+                            from={{ opacity: 0, y: 20 }}
+                            to={{ opacity: 1, y: 0 }}
+                            threshold={0.1}
+                          />
                         </h3>
                       </div>
 
                       {/* Toggle Button */}
                       <button
                         type="button"
-                        className="relative h-9 w-9 shrink-0 focus:outline-none"
-                        aria-label={isSelfOpen ? "Close panel" : "Open panel"}
+                        tabIndex={-1}
+                        className="relative h-9 w-9 shrink-0 focus:outline-none pointer-events-none"
+                        aria-hidden="true"
                       >
                         {/* Arrow */}
                         <div className={`absolute inset-0 grid place-items-center rounded-full border border-border transition-all duration-300 ${
-                          isSelfOpen ? "opacity-0 scale-75 rotate-45 border-transparent" : "opacity-100 scale-100 rotate-0"
+                          isSelfOpen ? "opacity-0 scale-75 rotate-45 border-transparent" : "opacity-100 scale-100 rotate-0 group-hover:border-text-primary"
                         }`}>
                           <Arrow className="h-3.5 w-3.5" />
                         </div>
@@ -177,19 +251,36 @@ export function SourceServices() {
                       className="service-panel overflow-hidden transition-all duration-300"
                       style={{ height: 0, opacity: 0 }}
                     >
-                      <div className="pt-4 grid gap-4 md:grid-cols-[1fr_200px] items-center border-t border-white/10 mt-3">
+                      <div className="pt-4 grid gap-6 items-start border-t border-white/10 mt-3">
                         <div>
-                          <p className="text-xs md:text-sm leading-relaxed text-[var(--paper)]/80 max-w-md">
-                            {it.body}
-                          </p>
+                          {isSelfOpen ? (
+                            <SplitText
+                              text={it.body}
+                              className="text-sm md:text-[15px] leading-relaxed text-[var(--paper)]/85 max-w-2xl"
+                              delay={20}
+                              duration={0.5}
+                              ease="power3.out"
+                              splitType="words"
+                              from={{ opacity: 0, y: 15 }}
+                              to={{ opacity: 1, y: 0 }}
+                              threshold={0}
+                              textAlign="left"
+                            />
+                          ) : (
+                            <p className="text-sm md:text-[15px] leading-relaxed text-[var(--paper)]/85 max-w-2xl">
+                              {it.body}
+                            </p>
+                          )}
                         </div>
-                        <div className="service-thumb hidden h-28 w-full overflow-hidden rounded-lg md:block opacity-0">
-                          <img
-                            src={it.img}
-                            alt={it.title}
-                            className="h-full w-full object-cover"
-                            loading="lazy"
-                          />
+                        <div className="flex flex-wrap items-center gap-2 mt-1">
+                          {it.technologies.map((tech) => (
+                            <span 
+                              key={tech} 
+                              className="tech-pill opacity-0 translate-y-2 text-[11px] md:text-xs font-medium tracking-wider text-[var(--paper)]/90 px-3 py-1.5 rounded-full border border-[var(--paper)]/15 bg-white/5 uppercase"
+                            >
+                              {tech}
+                            </span>
+                          ))}
                         </div>
                       </div>
                     </div>

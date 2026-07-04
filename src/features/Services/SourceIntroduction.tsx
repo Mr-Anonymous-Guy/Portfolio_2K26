@@ -3,6 +3,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { AnimatedCounter } from "@/components/shared/AnimatedCounter";
 import { Asterisk } from "@/features/Hero/SourceHero";
+import Shuffle from "@/components/shared/Shuffle";
+
 const impactFigure = "/images/impact-figure.jpg";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -73,17 +75,17 @@ export function SourceIntroduction() {
       <div className="container-x mx-auto max-w-[1480px] py-24 md:py-32">
         <div className="mb-12 flex items-center gap-3 text-xs uppercase tracking-[0.22em] text-text-secondary">
           <Asterisk className="h-3 w-3 text-accent" />
-          WHO I AM
+          <Shuffle text="WHO I AM" tag="span" />
         </div>
         <div className="grid gap-12 lg:grid-cols-12">
           <h2 className="reveal font-display text-[clamp(36px,5.4vw,84px)] lg:col-span-7">
-            BUILDING
+            <Shuffle text="BUILDING" tag="span" />
             <br />
-            <span className="text-accent">INTELLIGENT</span>
+            <Shuffle text="INTELLIGENT" tag="span" className="text-accent" />
             <br />
-            DIGITAL
+            <Shuffle text="DIGITAL" tag="span" />
             <br />
-            PRODUCTS
+            <Shuffle text="PRODUCTS" tag="span" />
           </h2>
           <div className="reveal lg:col-span-5">
             <div className="aspect-[4/5] w-full max-w-[280px] overflow-hidden bg-accent img-reveal">

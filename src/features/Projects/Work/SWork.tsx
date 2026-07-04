@@ -9,67 +9,20 @@ import { gsap } from 'gsap';
 import { SlowMo } from 'gsap/EasePack';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+import { workManifest } from '@/data/workManifest';
+
 gsap.registerPlugin(ScrollTrigger, SlowMo);
-
-const videos = [
-  '/works/Dummy.mp4',
-  '/works/Pen-4.mp4',
-  '/works/Pen-5.mp4',
-  '/works/Pen-6.mp4',
-  '/works/Pen-7.mp4',
-  '/works/Pen-8.mp4',
-];
-
-const info: Record<string, { title: string; site: string }> = {
-  Pen: { title: 'CodePen', site: 'https://github.com/Mr-Anonymous-Guy/' },
-  Dummy1: { title: 'Dummy Project 1', site: 'https://github.com/Mr-Anonymous-Guy/' },
-  Dummy2: { title: 'Dummy Project 2', site: 'https://github.com/Mr-Anonymous-Guy/' },
-  Dummy3: { title: 'Dummy Project 3', site: 'https://github.com/Mr-Anonymous-Guy/' },
-  Dummy4: { title: 'Dummy Project 4', site: 'https://github.com/Mr-Anonymous-Guy/' },
-  Dummy5: { title: 'Dummy Project 5', site: 'https://github.com/Mr-Anonymous-Guy/' },
-  Dummy6: { title: 'Dummy Project 6', site: 'https://github.com/Mr-Anonymous-Guy/' },
-  Dummy7: { title: 'Dummy Project 7', site: 'https://github.com/Mr-Anonymous-Guy/' },
-  Dummy8: { title: 'Dummy Project 8', site: 'https://github.com/Mr-Anonymous-Guy/' },
-  Dummy9: { title: 'Dummy Project 9', site: 'https://github.com/Mr-Anonymous-Guy/' },
-  Dummy10: { title: 'Dummy Project 10', site: 'https://github.com/Mr-Anonymous-Guy/' }
-};
 
 export const SWork: React.FC = () => {
   const rootRef = useRef<HTMLElement>(null);
   const [works, setWorks] = useState<any[]>([]);
 
   useEffect(() => {
-    let projects: any[] = [];
-    let pens: any[] = [];
+    // We shuffle the dynamically loaded manifest array
+    // Filter out any explicitly hidden items
+    let visibleWorks = workManifest.filter(work => work.status !== 'Archived' && work.status !== 'Private');
 
-    videos.forEach((src) => {
-      const key = src.split('/').pop()?.split('-')[0].split('.')[0] || '';
-      const project = info[key] || info['Pen'];
-      if (!project) return;
-      const caption = project.title;
-      const site = project.site;
-
-      if (key === 'Pen' || key.includes('Pen')) {
-        pens.push({ caption, site, src });
-      } else {
-        projects.push({ caption, site, src });
-      }
-    });
-
-    for (let i = 1; i <= 14; i++) {
-      const key = `Dummy${i}`;
-      const project = info[key];
-      if (!project) continue;
-
-      for (let j = 0; j < 4; j++) {
-        projects.push({
-          caption: `${project.title} - Video ${j + 1}`,
-          site: project.site,
-          src: '/works/Dummy.mp4'
-        });
-      }
-    }
-
+    // Optionally sort by displayOrder if we wanted to enforce order, but random shuffling keeps it fresh
     function shuffle(array: any[]) {
       let currentIndex = array.length;
       while (currentIndex !== 0) {
@@ -78,22 +31,8 @@ export const SWork: React.FC = () => {
         [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
       }
     }
-
-    shuffle(projects);
-
-    let finalWorks = [];
-    let chunkSize = Math.floor(projects.length / Math.max(pens.length, 1));
-    let i = 0;
-    let j = 0;
-    while (i < projects.length) {
-      finalWorks.push(projects[i]);
-      if (j < pens.length && (i + 1) % chunkSize === 0) {
-        finalWorks.push(pens[j]);
-        j++;
-      }
-      i++;
-    }
-    setWorks(finalWorks);
+    shuffle(visibleWorks);
+    setWorks(visibleWorks);
   }, []);
 
   useEffect(() => {
@@ -385,24 +324,6 @@ export const SWork: React.FC = () => {
         this.tl.fromTo(this, { pointsProgress: 1 }, { pointsProgress: 0, duration: 1, ease: 'power4.inOut' }, '-=1');
       }
 
-      loadNextVideo() {
-        const video = Array.from(this.videos).find((video) => !video.classList.contains('is-loaded'));
-        if (video) {
-          if (video.readyState >= 3) {
-            this.videoLoaded(video);
-          } else {
-            video.addEventListener('canplaythrough', () => { this.videoLoaded(video); }, { once: true });
-            video.setAttribute('src', video.getAttribute('data-src')!);
-            video.load();
-          }
-        }
-      }
-
-      videoLoaded(video: HTMLVideoElement) {
-        video.classList.add('is-loaded');
-        this.loadNextVideo();
-      }
-
       moveLetters() {
         const { speed, letters, animationProgress } = this;
         letters.forEach((letter: any, i: number) => {
@@ -505,11 +426,12 @@ export const SWork: React.FC = () => {
           <div className="s__scene js-scene">
             {works.map((work, index) => (
               <AWork
-                key={index}
+                key={work.id || index}
                 cssClass="s__scene__work s__scene__work--video js-work"
-                caption={work.caption}
-                site={work.site}
-                src={work.src}
+                title={work.title}
+                subtitle={work.category}
+                externalUrl={work.externalUrl}
+                src={work.video}
                 index={String(index).padStart(4, '0')}
                 total={String(works.length).padStart(2, '0')}
               />

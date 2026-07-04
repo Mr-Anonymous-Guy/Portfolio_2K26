@@ -1,19 +1,23 @@
-import { Asterisk } from "@/features/Hero/SourceHero";
+import LogoLoop from "@/components/shared/LogoLoop";
+import { technologyStack } from "@/data/technologyStack";
 
 export function SourceMarquee() {
-  const items = ["UI Design", "UX Research", "Brand Identity", "Webflow", "Framer", "Motion", "Design Systems"];
-  const row = [...items, ...items, ...items];
-  
+  const logos = technologyStack.map((tech) => ({
+    title: tech.name,
+    node: <span className="font-semibold uppercase tracking-widest">{tech.name}</span>
+  }));
+
   return (
-    <div className="overflow-hidden border-y border-ink/10 bg-cream py-5">
-      <div className="src-marquee-track flex w-max gap-12 whitespace-nowrap text-sm uppercase tracking-[0.22em] text-ink/70">
-        {row.map((t, i) => (
-          <span key={i} className="flex items-center gap-12 transition-opacity duration-300">
-            {t}
-            <Asterisk className="h-3 w-3 text-orange" />
-          </span>
-        ))}
-      </div>
+    <div className="border-y border-ink/10 bg-cream py-5">
+      <LogoLoop 
+        logos={logos} 
+        speed={45}
+        direction="left"
+        gap={48}
+        logoHeight={24}
+        hoverSpeed={15}
+        className="text-ink/80 text-sm" 
+      />
     </div>
   );
 }

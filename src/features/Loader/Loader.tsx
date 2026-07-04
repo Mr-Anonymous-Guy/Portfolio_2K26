@@ -8,6 +8,7 @@ import {
 } from "@/animations/loaderTimeline";
 import { Decoder } from "@/animations/heroTimeline";
 import { audioManager } from "@/services/audio/audioManager";
+import Ferrofluid from "@/components/shared/Ferrofluid";
 import "./Loader.scss";
 
 
@@ -134,6 +135,24 @@ export function Loader() {
 
   return (
     <div ref={containerRef} className="e-loader">
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
+        <Ferrofluid
+          colors={["#ff004d","#ff004d","#ff004d"]}
+          speed={0.5}
+          scale={1}
+          turbulence={1}
+          fluidity={0.1}
+          rimWidth={0.2}
+          sharpness={3}
+          shimmer={1}
+          glow={2}
+          flowDirection="down"
+          opacity={1}
+          mouseInteraction={true}
+          mouseStrength={1}
+          mouseRadius={0.3}
+        />
+      </div>
       <div className="container e-loader__container">
         {/* Left side list of scrolling phrases */}
         <div className="e-loader__items-wrapper" style={{ "--count": PHRASES.length * 2 } as React.CSSProperties}>

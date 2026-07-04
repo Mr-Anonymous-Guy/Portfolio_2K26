@@ -1,6 +1,9 @@
 import { useRef, type CSSProperties } from "react";
 import { useGSAPContext } from "@/hooks/useGSAP";
 import { useUI } from "@/store/ui";
+import PixelTransition from "@/components/shared/PixelTransition";
+import LogoLoop from "@/components/shared/LogoLoop";
+import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiVite, SiFigma, SiFramer } from 'react-icons/si';
 const heroPortrait = "/images/Image.webp";
 
 export const Asterisk = ({ className = "" }: { className?: string }) => (
@@ -233,8 +236,15 @@ export function SourceHero() {
 
   }, [loaded]);
 
-  const marqueeItems = ["UI Design", "UX Research", "Brand Identity", "Webflow", "Framer", "Motion", "Design Systems"];
-  const marqueeRow = [...marqueeItems, ...marqueeItems, ...marqueeItems];
+  const techLogos = [
+    { node: <SiReact />, title: "React", href: "https://react.dev" },
+    { node: <SiNextdotjs />, title: "Next.js", href: "https://nextjs.org" },
+    { node: <SiTypescript />, title: "TypeScript", href: "https://www.typescriptlang.org" },
+    { node: <SiTailwindcss />, title: "Tailwind CSS", href: "https://tailwindcss.com" },
+    { node: <SiVite />, title: "Vite", href: "https://vitejs.dev" },
+    { node: <SiFigma />, title: "Figma", href: "https://figma.com" },
+    { node: <SiFramer />, title: "Framer", href: "https://framer.com" }
+  ];
 
   return (
     <section ref={heroRef} id="home" className="relative isolate overflow-hidden bg-background text-text-primary transition-colors duration-300 flex flex-col justify-between h-[100svh] overflow-hidden z-10">
@@ -282,17 +292,44 @@ export function SourceHero() {
         {/* ── Portrait (absolute, enlarged 12%, bottom edge near strip) ── */}
         <div
           ref={portraitWrapRef}
-          className="hero-portrait-wrap absolute left-1/2 top-[3%] h-[97%] w-auto max-w-none -translate-x-1/2 z-10 cursor-pointer pointer-events-auto"
+          className="hero-portrait-wrap absolute left-1/2 top-[3%] h-[97%] aspect-[1280/1600] max-w-none -translate-x-1/2 z-10 cursor-pointer pointer-events-auto"
         >
-          <img
-            id="hero-portrait"
-            ref={portraitRef}
-            src={heroPortrait}
-            alt="Portrait of Tutun, AI Engineer"
-            width={1280}
-            height={1600}
-            fetchPriority="high"
-            className="hero-portrait h-full w-auto object-contain grayscale will-change-[filter,transform]"
+          <PixelTransition
+            firstContent={
+              <img
+                id="hero-portrait"
+                ref={portraitRef}
+                src={heroPortrait}
+                alt="Portrait of Tutun, AI Engineer"
+                width={1280}
+                height={1600}
+                fetchPriority="high"
+                className="hero-portrait h-full w-full object-contain grayscale will-change-[filter,transform]"
+              />
+            }
+            secondContent={
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "grid",
+                  placeItems: "center",
+                  backgroundColor: "transparent"
+                }}
+              >
+                <img
+                  src={heroPortrait}
+                  alt="Portrait of Tutun, AI Engineer"
+                  width={1280}
+                  height={1600}
+                  className="h-full w-full object-contain"
+                />
+              </div>
+            }
+            gridSize={12}
+            pixelColor="var(--paper)"
+            animationStepDuration={0.4}
+            aspectRatio="0"
           />
         </div>
 
@@ -358,15 +395,16 @@ export function SourceHero() {
       </div>
 
       {/* ── Marquee (integrated directly at the bottom edge) ── */}
-      <div className="overflow-hidden border-t border-ink/10 bg-cream py-4 w-full relative z-20">
-        <div className="src-marquee-track flex w-max gap-12 whitespace-nowrap text-sm uppercase tracking-[0.22em] text-ink/70">
-          {marqueeRow.map((t, i) => (
-            <span key={i} className="flex items-center gap-12 transition-opacity duration-300">
-              {t}
-              <Asterisk className="h-3 w-3 text-orange" />
-            </span>
-          ))}
-        </div>
+      <div className="overflow-hidden border-t border-ink/10 bg-cream py-5 w-full relative z-20">
+        <LogoLoop
+          logos={techLogos}
+          speed={60}
+          direction="left"
+          gap={64}
+          logoHeight={48}
+          hoverSpeed={15}
+          ariaLabel="Technology Partners"
+        />
       </div>
     </section>
   );
