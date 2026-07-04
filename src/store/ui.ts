@@ -3,10 +3,6 @@ import { create } from "zustand";
 type CursorVariant = "default" | "hover" | "view" | "drag";
 
 interface UIState {
-  cursor: CursorVariant;
-  cursorLabel: string;
-  setCursor: (variant: CursorVariant, label?: string) => void;
-  resetCursor: () => void;
   loaded: boolean;
   setLoaded: (v: boolean) => void;
   contrastMode: boolean;
@@ -17,10 +13,6 @@ interface UIState {
 }
 
 export const useUI = create<UIState>((set) => ({
-  cursor: "default",
-  cursorLabel: "",
-  setCursor: (cursor, cursorLabel = "") => set({ cursor, cursorLabel }),
-  resetCursor: () => set({ cursor: "default", cursorLabel: "" }),
   loaded: false,
   setLoaded: (loaded) => set({ loaded }),
   contrastMode: true,

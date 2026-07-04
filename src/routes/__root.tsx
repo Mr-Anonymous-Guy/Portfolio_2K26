@@ -8,12 +8,12 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
-import { useUI } from "@/store/ui";
+import { useUI, useSiteStore } from "@/store/ui";
 
 import appCss from "@/styles.css?url";
 import { reportLovableError } from "@/lib/lovable-error-reporting";
 import { destroyObserverBridge, initObserverBridge } from "@/lib/observerBridge";
-import { CustomCursor } from "@/components/shared/CustomCursor";
+import SplashCursor from "@/components/effects/SplashCursor/SplashCursor";
 
 declare global {
   interface Window {
@@ -118,6 +118,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   const isContrast = useUI((s) => s.isContrast);
+  const isIntroComplete = useSiteStore((s) => s.isIntroComplete);
+  
+  const splashColor = isContrast ? "#ffffff" : "#ff004d";
+  
+  // Enhanced version for the loading screen (when intro is not complete)
+  const splashProps = isIntroComplete 
+    ? { SPLAT_RADIUS: 0.2, SPLAT_FORCE: 6000, DENSITY_DISSIPATION: 3.5 }
+    : { SPLAT_RADIUS: 0.4, SPLAT_FORCE: 8000, DENSITY_DISSIPATION: 1.8, VELOCITY_DISSIPATION: 1.0 };
+
   return (
     <html lang="en" className={isContrast ? "theme-red is-contrast" : ""}>
       <head>
@@ -125,7 +134,7 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         <div className="site-contrast-mask js-contrast-mask"></div>
-        <CustomCursor />
+        <SplashCursor COLOR={splashColor} RAINBOW_MODE={false} {...splashProps} />
         {children}
         <Scripts />
       </body>
