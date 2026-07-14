@@ -3,20 +3,12 @@ import './SMyWay.scss';
 import { Section } from './Section';
 
 const frames = [
-  { caption: 'Generative art poster concept',    src: '/images/frames/art-1987.jpg' },
-  { caption: 'Generative art poster concept',    src: '/images/frames/art-dtyw.jpg' },
-  { caption: 'Generative art poster concept',    src: '/images/frames/art-lines.jpg' },
-  { caption: 'My first FOTD on FWA  ♥ (2012)',  src: '/images/frames/first-fwa.jpg' },
-  { caption: 'Roaaaar!',                         src: '/images/frames/roar.jpg' },
-  { caption: 'Early age (2006) desk setup ',     src: '/images/frames/setup-2006.jpg' },
-  { caption: '2016 desk setup',                  src: '/images/frames/setup-2016.jpg' },
-  { caption: '2020 desk setup',                  src: '/images/frames/setup-2020.jpg' },
-  { caption: 'Waaark Creative Robots',           src: '/images/frames/waaark.png' },
-  { caption: '2011 portfolio',                   src: '/images/frames/portfolio-2011.jpg' },
-  { caption: '2014 portfolio',                   src: '/images/frames/portfolio-2014.jpg' },
-  { caption: '2017 portfolio (never released)',  src: '/images/frames/portfolio-2017.jpg' },
-  { caption: '2021 portfolio',                   src: '/images/frames/portfolio-2021.jpg' },
-  { caption: 'Legos ♥',                         src: '/images/frames/legos.jpg' },
+  { caption: 'Certificate', src: '/images/frames/248c811f3357d679b89e0176d86c44e9.png' },
+  { caption: 'AdyaAI Buildathon Certificate', src: '/images/frames/AdyaAI_Buildathon_Certificate_Tutun Mahapatra.png' },
+  { caption: 'Corizo Certificate', src: '/images/frames/Corizo_1739855661385.png' },
+  { caption: 'Microsoft AI Skills Fest GWR Attempt Badge', src: '/images/frames/MicrosoftAISkillsFestGWRAttemptBadge[full].png' },
+  { caption: 'Certificate - Tutun Mahapatra', src: '/images/frames/Tutun Mahapatra.png' },
+  { caption: 'Certificate - Tutun', src: '/images/frames/Tutun.png' },
 ];
 
 export function SMyWay() {
