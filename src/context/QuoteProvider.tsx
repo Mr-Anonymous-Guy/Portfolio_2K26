@@ -95,7 +95,7 @@ export function QuoteProvider({ children }: { children: ReactNode }) {
       abortController.abort();
       clearInterval(interval);
     };
-  }, [queue.length, currentQuote]);
+  }, []);
 
   const rotateToNextQuote = () => {
     const nextQueue = [...queueRef.current];

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { usePreloadStore } from '@/store/preload';
 import './AWork.scss';
 
 interface AWorkProps {
@@ -14,7 +15,15 @@ interface AWorkProps {
 export const AWork: React.FC<AWorkProps> = ({ title, subtitle, cssClass, index, externalUrl, src, total }) => {
   const [key] = useState(() => Math.random().toString(36).slice(2, 6) + '-' + index + '/' + total);
   const videoRef = useRef<HTMLVideoElement>(null);
-  
+
+  // Check if we have a pre-cached blob URL from the preloader
+  const getVideoUrl = usePreloadStore((s) => s.getVideoUrl);
+  const videoBlobUrls = usePreloadStore((s) => s.videoBlobUrls);
+
+  // Resolve the best available URL (blob if preloaded, original otherwise)
+  const resolvedSrc = src ? getVideoUrl(src) : '';
+  const isPreloaded = resolvedSrc !== src && resolvedSrc !== '';
+
   useEffect(() => {
     const videoEl = videoRef.current;
     if (!videoEl) return;
@@ -26,10 +35,14 @@ export const AWork: React.FC<AWorkProps> = ({ title, subtitle, cssClass, index, 
       observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            // Load the source only when entering viewport the first time
+            // If not preloaded, lazy-load from data-src as fallback
             if (!videoEl.getAttribute('src')) {
-              videoEl.src = videoEl.getAttribute('data-src') || '';
-              videoEl.load();
+              const cachedUrl = getVideoUrl(src);
+              const finalSrc = cachedUrl !== src ? cachedUrl : (videoEl.getAttribute('data-src') || '');
+              if (finalSrc) {
+                videoEl.src = finalSrc;
+                videoEl.load();
+              }
             }
             const playPromise = videoEl.play();
             if (playPromise !== undefined) {
@@ -38,7 +51,7 @@ export const AWork: React.FC<AWorkProps> = ({ title, subtitle, cssClass, index, 
                 // Fallback: If autoplay fails, force rendering the first frame
                 videoEl.currentTime = 0.1;
                 
-                // Retry playback on next visibility change or interaction
+                // Retry playback on next interaction
                 const retryPlay = () => {
                   videoEl.play().catch(() => {});
                   document.removeEventListener('click', retryPlay);
@@ -60,7 +73,22 @@ export const AWork: React.FC<AWorkProps> = ({ title, subtitle, cssClass, index, 
         observer.disconnect();
       }
     };
-  }, []);
+  }, [src, getVideoUrl]);
+
+  // When preloaded blob URLs become available, hot-swap the source
+  useEffect(() => {
+    const videoEl = videoRef.current;
+    if (!videoEl || !src) return;
+
+    const cachedUrl = getVideoUrl(src);
+    const currentSrc = videoEl.getAttribute('src') || '';
+
+    // If we got a new blob URL and the video either has no src or has the original URL
+    if (cachedUrl !== src && (currentSrc === '' || currentSrc === src || currentSrc.startsWith(src))) {
+      videoEl.src = cachedUrl;
+      videoEl.load();
+    }
+  }, [videoBlobUrls, src, getVideoUrl]);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && !customElements.get('a-work')) {
@@ -108,12 +136,16 @@ export const AWork: React.FC<AWorkProps> = ({ title, subtitle, cssClass, index, 
       <a href={repoUrl} target="_blank" rel="noopener noreferrer">
         <video
           ref={videoRef}
-          data-src={src}
+          // If preloaded, set src directly; otherwise use data-src for lazy loading
+          {...(isPreloaded
+            ? { src: resolvedSrc }
+            : { 'data-src': src }
+          )}
           className="a__video js-video"
           loop
           muted
           playsInline
-          preload="metadata"
+          preload={isPreloaded ? 'auto' : 'metadata'}
         ></video>
 
         <div className="a__caption">

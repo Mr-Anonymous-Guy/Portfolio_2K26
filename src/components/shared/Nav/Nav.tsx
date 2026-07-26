@@ -59,6 +59,8 @@ export function Nav() {
     }
   }, []);
 
+  const contrastTlRef = useRef<gsap.core.Timeline | null>(null);
+
   // Theme Toggle
   const toggleContrast = () => {
     const mask = document.querySelector(".js-contrast-mask") as HTMLElement;
@@ -72,11 +74,22 @@ export function Nav() {
       return;
     }
 
+    // Kill any ongoing contrast animation to avoid stuck mask state
+    if (contrastTlRef.current) {
+      contrastTlRef.current.kill();
+      contrastTlRef.current = null;
+    }
+
     const isCurrentlyContrast = isContrast;
     const targetPaper = !isCurrentlyContrast ? "#ff004d" : "#ffc6a8";
     const targetBorder = !isCurrentlyContrast ? "rgba(13, 0, 4, 0.25)" : "rgba(13, 0, 4, 0.15)";
 
-    const tl = gsap.timeline();
+    const tl = gsap.timeline({
+      onInterrupt: () => {
+        gsap.set(mask, { x: "-100%" });
+      },
+    });
+    contrastTlRef.current = tl;
 
     gsap.set(mask, {
       background: targetPaper,
@@ -102,6 +115,7 @@ export function Nav() {
 
     tl.call(() => {
       gsap.set(mask, { x: "-100%" });
+      contrastTlRef.current = null;
       Emitter.emit(
         "contrastchange",
         !isCurrentlyContrast ? "contrasted" : "default"

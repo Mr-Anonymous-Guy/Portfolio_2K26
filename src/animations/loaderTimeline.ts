@@ -50,24 +50,47 @@ export function startPhrasesScroll(
   return tl;
 }
 
-// Progress timer to animate percent from 0 to 100
-export function startProgressCounter(
-  onUpdate: (value: number) => void,
-  onComplete: () => void
+/**
+ * Smoothly interpolate a displayed progress value toward a real target.
+ * Returns a controller object with `update(target)` and `kill()` methods.
+ *
+ * Unlike the old startProgressCounter which faked 0→100 on a timer,
+ * this follows real preloader progress with smooth GSAP tweening.
+ */
+export function createProgressInterpolator(
+  onUpdate: (displayValue: number) => void
 ) {
-  const progressObj = { value: 0 };
-  
-  return gsap.to(progressObj, {
-    value: 100,
-    duration: 3.2,
-    ease: "power2.out",
-    onUpdate: () => {
-      onUpdate(Math.floor(progressObj.value));
+  const state = { display: 0 };
+  let currentTween: gsap.core.Tween | null = null;
+
+  return {
+    /** Push a new target value (0–100). The display will smoothly catch up. */
+    update(target: number) {
+      const clamped = Math.min(100, Math.max(0, target));
+
+      // Don't re-tween if already at target
+      if (Math.abs(state.display - clamped) < 0.5 && clamped < 100) return;
+
+      if (currentTween) currentTween.kill();
+
+      currentTween = gsap.to(state, {
+        display: clamped,
+        duration: clamped === 100 ? 0.6 : 0.4,
+        ease: "power2.out",
+        onUpdate: () => {
+          onUpdate(Math.floor(state.display));
+        },
+      });
     },
-    onComplete: () => {
-      onComplete();
-    }
-  });
+
+    /** Get the current displayed value */
+    get value() { return Math.floor(state.display); },
+
+    /** Clean up */
+    kill() {
+      if (currentTween) currentTween.kill();
+    },
+  };
 }
 
 // Transition from progress loader to Sound Options

@@ -66,6 +66,10 @@ function SplashCursor({
     let pointers = [new pointerPrototype()];
 
     const { gl, ext } = getWebGLContext(canvas);
+    if (!gl || !ext || !ext.formatRGBA || !ext.formatRG || !ext.formatR) {
+      console.warn("SplashCursor: WebGL not supported or texture format creation failed");
+      return;
+    }
     if (!ext.supportLinearFiltering) {
       config.DYE_RESOLUTION = 256;
       config.SHADING = false;
@@ -82,6 +86,7 @@ function SplashCursor({
       let gl = canvas.getContext('webgl2', params);
       const isWebGL2 = !!gl;
       if (!isWebGL2) gl = canvas.getContext('webgl', params) || canvas.getContext('experimental-webgl', params);
+      if (!gl) return { gl: null, ext: null };
 
       let halfFloat;
       let supportLinearFiltering;
@@ -562,6 +567,10 @@ function SplashCursor({
       const rgba = ext.formatRGBA;
       const rg = ext.formatRG;
       const r = ext.formatR;
+      if (!rgba || !rg || !r) {
+        console.warn("SplashCursor: Required WebGL texture formats not supported");
+        return;
+      }
       const filtering = ext.supportLinearFiltering ? gl.LINEAR : gl.NEAREST;
       gl.disable(gl.BLEND);
 

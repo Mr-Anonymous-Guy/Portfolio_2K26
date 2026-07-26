@@ -115,8 +115,8 @@ export function SourceHero() {
       const exitTl = gsap.timeline({
         scrollTrigger: {
           trigger: heroSection,
-          start: "bottom bottom",   // begins when hero bottom hits viewport bottom
-          end: "+=60%",             // 60% of viewport = compression travel
+          start: "top top",         // begins when hero top starts scrolling past viewport top
+          end: "bottom top",        // completes when hero section leaves viewport
           scrub: 0.6,               // smooth scrub
           pin: false,               // no pin — hero compresses naturally
         },
@@ -148,25 +148,25 @@ export function SourceHero() {
         ease: "none",
       }, 0);
 
-      // Description fades out
+      // Description fades out as section exits
       exitTl.to(".hero-desc-item", {
         opacity: 0,
         y: -30,
         ease: "none",
-      }, 0);
+      }, 0.3);
 
-      // Social buttons fade out
+      // Social buttons fade out as section exits
       exitTl.to(".hero-social-item", {
         opacity: 0,
         y: -20,
         ease: "none",
-      }, 0);
+      }, 0.3);
 
-      // Copyright fades out
+      // Copyright fades out as section exits
       exitTl.to(".hero-copyright", {
         opacity: 0,
         ease: "none",
-      }, 0);
+      }, 0.3);
 
       // Scroll-driven portrait color reveal
       const portrait = portraitRef.current;

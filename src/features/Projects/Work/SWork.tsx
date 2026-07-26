@@ -75,7 +75,6 @@ export const SWork: React.FC = () => {
       state: number = 0;
       speed: number = 0;
       isPaused: boolean = true;
-      loadIsStarted: boolean = false;
 
       constructor(rootEl: HTMLElement) {
         this.el = rootEl;
@@ -143,10 +142,6 @@ export const SWork: React.FC = () => {
             Emitter.off('tick', this.tick, this);
           } else {
             Emitter.on('tick', this.tick, this);
-          }
-          if (!this.loadIsStarted) {
-            this.loadNextVideo();
-            this.loadIsStarted = true;
           }
         });
         this.observer.observe(this.el);

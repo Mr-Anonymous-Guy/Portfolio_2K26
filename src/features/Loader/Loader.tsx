@@ -1,8 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useUI } from "@/store/ui";
+import { usePreloadStore } from "@/store/preload";
 import {
   startPhrasesScroll,
-  startProgressCounter,
+  createProgressInterpolator,
   transitionToSoundOptions,
   exitLoader
 } from "@/animations/loaderTimeline";
@@ -21,6 +22,8 @@ const PHRASES = [
   "Entering Anonymous's Digital Universe..."
 ];
 
+/** Minimum duration (ms) the loader must display for dramatic effect */
+const MIN_LOADER_DURATION_MS = 3000;
 
 
 export function Loader() {
@@ -28,6 +31,10 @@ export function Loader() {
   const [percent, setPercent] = useState(0);
   const [activeItemIndex, setActiveItemIndex] = useState(-1);
   const [showLoader, setShowLoader] = useState(true);
+
+  // Real progress from preloader
+  const preloadProgress = usePreloadStore((s) => s.progress);
+  const isReady = usePreloadStore((s) => s.isReady);
 
   // Refs for animation
   const containerRef = useRef<HTMLDivElement>(null);
@@ -43,11 +50,18 @@ export function Loader() {
   const textDecoderRef = useRef<Decoder | null>(null);
   const soundTextDecoderRef = useRef<Decoder | null>(null);
 
+  // Progress interpolator ref
+  const interpolatorRef = useRef<ReturnType<typeof createProgressInterpolator> | null>(null);
+
+  // Track whether we've already transitioned to sound options
+  const hasTransitioned = useRef(false);
+  const mountTimeRef = useRef(Date.now());
+
+  // ─── Initialize animations (phrase scroll, decoders) ───
   useEffect(() => {
     // 1. Initialize character decoders
     if (textRef.current) {
       textDecoderRef.current = new Decoder(textRef.current);
-      // Run initial decode on the loader text
       textDecoderRef.current.animate({ withSound: false, delay: 0.1 });
     }
 
@@ -67,44 +81,85 @@ export function Loader() {
       );
     }
 
-    // 3. Start progress counter
-    const counterTween = startProgressCounter(
-      (val) => {
-        setPercent(val);
-      },
-      () => {
-        // Once 100% is reached, wait 1.3 seconds, then transition to sound options
-        setTimeout(() => {
-          if (
-            itemsRefs.current.length > 0 &&
-            textRef.current &&
-            progressRef.current &&
-            soundIconRef.current &&
-            soundTextRef.current &&
-            buttonsWrapperRef.current
-          ) {
-            transitionToSoundOptions(
-              itemsRefs.current,
-              textRef.current,
-              progressRef.current,
-              soundIconRef.current,
-              soundTextRef.current,
-              buttonsWrapperRef.current,
-              soundTextDecoderRef.current
-            );
-          }
-        }, 1300);
-      }
-    );
+    // 3. Create smooth progress interpolator (replaces fake counter)
+    interpolatorRef.current = createProgressInterpolator((val) => {
+      setPercent(val);
+    });
 
     // Clean up
     return () => {
-      counterTween.kill();
+      if (interpolatorRef.current) interpolatorRef.current.kill();
       if (scrollTimeline) scrollTimeline.kill();
       if (textDecoderRef.current) textDecoderRef.current.destroy();
       if (soundTextDecoderRef.current) soundTextDecoderRef.current.destroy();
     };
   }, []);
+
+  // ─── Feed real progress into the smooth interpolator ───
+  useEffect(() => {
+    if (interpolatorRef.current) {
+      interpolatorRef.current.update(preloadProgress);
+    }
+  }, [preloadProgress]);
+
+  // ─── Transition to sound options when ready ───
+  const triggerSoundTransition = useCallback(() => {
+    if (hasTransitioned.current) return;
+    hasTransitioned.current = true;
+
+    // Ensure percent display shows 100 before transitioning
+    if (interpolatorRef.current) {
+      interpolatorRef.current.update(100);
+    }
+
+    // Wait for the 100% to render, then transition
+    setTimeout(() => {
+      if (
+        itemsRefs.current.length > 0 &&
+        textRef.current &&
+        progressRef.current &&
+        soundIconRef.current &&
+        soundTextRef.current &&
+        buttonsWrapperRef.current
+      ) {
+        transitionToSoundOptions(
+          itemsRefs.current,
+          textRef.current,
+          progressRef.current,
+          soundIconRef.current,
+          soundTextRef.current,
+          buttonsWrapperRef.current,
+          soundTextDecoderRef.current
+        );
+      }
+    }, 1300);
+  }, []);
+
+  // Max fallback timeout to ensure loader NEVER gets stuck permanently (e.g. on network failure)
+  useEffect(() => {
+    const fallbackTimer = setTimeout(() => {
+      if (!usePreloadStore.getState().isReady) {
+        console.warn("Loader: Max timeout reached, forcing ready state");
+        usePreloadStore.getState().setReady(true);
+      }
+    }, 7000);
+
+    return () => clearTimeout(fallbackTimer);
+  }, []);
+
+  useEffect(() => {
+    if (!isReady) return;
+
+    // Enforce minimum loader duration for dramatic effect
+    const elapsed = Date.now() - mountTimeRef.current;
+    const remaining = Math.max(0, MIN_LOADER_DURATION_MS - elapsed);
+
+    const timer = setTimeout(() => {
+      triggerSoundTransition();
+    }, remaining);
+
+    return () => clearTimeout(timer);
+  }, [isReady, triggerSoundTransition]);
 
   const handleEnter = (withAudio: boolean) => {
     // Play click sound regardless of choice
@@ -119,12 +174,16 @@ export function Loader() {
     }
 
     if (containerRef.current) {
+      containerRef.current.style.pointerEvents = "none";
       // Recreate exit transition
       exitLoader(containerRef.current, () => {
         setShowLoader(false);
         setLoaded(true); // Trigger hero reveal animations
         window.dispatchEvent(new CustomEvent("loaderComplete"));
       });
+    } else {
+      setShowLoader(false);
+      setLoaded(true);
     }
   };
 
