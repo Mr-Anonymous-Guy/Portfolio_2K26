@@ -83,11 +83,29 @@ export const AWork: React.FC<AWorkProps> = ({ title, subtitle, cssClass, index, 
     }
   }, []);
 
+  const videoFileName = (src || '').split('/').pop()?.replace(/\.[^/.]+$/, '') || '';
+  const CUSTOM_LIVE_URLS: Record<string, string> = {
+    'Fhir-Tech': 'https://fhir-tech.vercel.app/',
+    'Simple-Wether': 'https://simplewether.vercel.app/',
+    'To_Do_APP': 'https://taskflow-iota-puce.vercel.app/',
+    'ECommerce_Store': 'https://nextgen-delta-orpin.vercel.app/',
+    'ECommerse_Store': 'https://nextgen-delta-orpin.vercel.app/',
+    'Calculator(Web)': 'https://apexcompute.vercel.app/',
+    'Healthcare_AI_Prototype': 'https://healthcare-ai-nu.vercel.app/',
+    'Portfolio': 'https://portfolio2k26.vercel.app/',
+  };
+
+  const fallbackUrl = CUSTOM_LIVE_URLS[videoFileName] || (videoFileName ? `https://github.com/Mr-Anonymous-Guy/${videoFileName}` : 'https://github.com/Mr-Anonymous-Guy');
+
+  const repoUrl = (externalUrl && externalUrl !== 'https://github.com/Mr-Anonymous-Guy' && externalUrl !== 'https://github.com/Mr-Anonymous-Guy/')
+    ? externalUrl
+    : fallbackUrl;
+
   return React.createElement(
     'a-work',
     { class: cssClass },
     <div className="a__inner">
-      <a href={externalUrl} target="_blank" rel="noopener noreferrer">
+      <a href={repoUrl} target="_blank" rel="noopener noreferrer">
         <video
           ref={videoRef}
           data-src={src}

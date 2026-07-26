@@ -65,12 +65,23 @@ export const workItems: WorkItem[] = Object.keys(rawVideos).map((key, index) => 
   
   const videoPath = (rawVideos[key] as string) || key.replace('/public', '');
   
+  const CUSTOM_LIVE_URLS: Record<string, string> = {
+    'Fhir-Tech': 'https://fhir-tech.vercel.app/',
+    'Simple-Wether': 'https://simplewether.vercel.app/',
+    'To_Do_APP': 'https://taskflow-iota-puce.vercel.app/',
+    'ECommerce_Store': 'https://nextgen-delta-orpin.vercel.app/',
+    'ECommerse_Store': 'https://nextgen-delta-orpin.vercel.app/',
+    'Calculator(Web)': 'https://apexcompute.vercel.app/',
+    'Healthcare_AI_Prototype': 'https://healthcare-ai-nu.vercel.app/',
+    'Portfolio': 'https://portfolio2k26.vercel.app/',
+  };
+
   return {
     id: `work-${nameWithoutExt}-${index}`,
     title: cleanTitle,
     subtitle,
     videoPath,
-    githubUrl: 'https://github.com/Mr-Anonymous-Guy',
+    githubUrl: CUSTOM_LIVE_URLS[nameWithoutExt] || `https://github.com/Mr-Anonymous-Guy/${nameWithoutExt}`,
     category
   };
 });

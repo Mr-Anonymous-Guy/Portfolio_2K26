@@ -3,12 +3,48 @@ import './SMyWay.scss';
 import { Section } from './Section';
 
 const frames = [
+  // Certificates & Badges
   { caption: 'Certificate', src: '/images/frames/248c811f3357d679b89e0176d86c44e9.png' },
   { caption: 'AdyaAI Buildathon Certificate', src: '/images/frames/AdyaAI_Buildathon_Certificate_Tutun Mahapatra.png' },
   { caption: 'Corizo Certificate', src: '/images/frames/Corizo_1739855661385.png' },
   { caption: 'Microsoft AI Skills Fest GWR Attempt Badge', src: '/images/frames/MicrosoftAISkillsFestGWRAttemptBadge[full].png' },
   { caption: 'Certificate - Tutun Mahapatra', src: '/images/frames/Tutun Mahapatra.png' },
   { caption: 'Certificate - Tutun', src: '/images/frames/Tutun.png' },
+
+  // Project Frames & Screenshots
+  { caption: 'AI Chat Assistant', src: '/images/frames/AI_Chat_Assistant.png' },
+  { caption: 'AI Resume Builder', src: '/images/frames/AI_Resume_Builder.png' },
+  { caption: 'ATM System', src: '/images/frames/ATM_System.png' },
+  { caption: 'Banking Management System', src: '/images/frames/Banking_Management_System.png' },
+  { caption: 'Web Calculator', src: '/images/frames/Calculator(Web).png' },
+  { caption: 'Socket Chat App', src: '/images/frames/Chat_App_Socket_Programming.png' },
+  { caption: 'DocuMind AI', src: '/images/frames/DocuMind.png' },
+  { caption: 'E-Commerce Store', src: '/images/frames/ECommerce_Store.png' },
+  { caption: 'Employee Management System', src: '/images/frames/Employee_Management_System.png' },
+  { caption: 'Expense Tracker Lite', src: '/images/frames/Expense_Tracker_Lite.png' },
+  { caption: 'FinSmart Platform', src: '/images/frames/FinSmart_Full.png' },
+  { caption: 'Grade Calculator', src: '/images/frames/Grade_Calculator.png' },
+  { caption: 'Healthcare AI Prototype', src: '/images/frames/Healtcare-ai-prototype.png' },
+  { caption: 'Java Employee Management System', src: '/images/frames/Java_Employee_Management_System.png' },
+  { caption: 'Java Library Management System', src: '/images/frames/Java_Library_Management_System.png' },
+  { caption: 'Java Simple Banking System', src: '/images/frames/Java_Simple_Banking_System.png' },
+  { caption: 'Library Management System', src: '/images/frames/Library_Management_System.png' },
+  { caption: 'Mini E-Commerce System', src: '/images/frames/Mini_E-Commerce_System.png' },
+  { caption: 'NovaShell', src: '/images/frames/Novashell.png' },
+  { caption: 'Number Guessing Game', src: '/images/frames/Number_Guessing_Game.png' },
+  { caption: 'Password Generator', src: '/images/frames/Password_Generator.png' },
+  { caption: 'Pattern Printer', src: '/images/frames/Pattern_Printer.png' },
+  { caption: 'Interactive Portfolio', src: '/images/frames/Portfolio.png' },
+  { caption: 'Rock Paper Scissors', src: '/images/frames/Rock_Paper_Scissors.png' },
+  { caption: 'Sales Forecasting AI', src: '/images/frames/Sales_Forecasting.png' },
+  { caption: 'Simple Banking System (C)', src: '/images/frames/Simple_Banking_System_C.png' },
+  { caption: 'Simple Inventory System', src: '/images/frames/Simple_Inventory_System.png' },
+  { caption: 'Student Marks Predictor', src: '/images/frames/Student_Marks_Predictor.png' },
+  { caption: 'Student Record System', src: '/images/frames/Student_Record_System.png' },
+  { caption: 'To-Do Application', src: '/images/frames/To_Do_APP.png' },
+  { caption: 'AI Assistant Platform', src: '/images/frames/ai-assistant-platform.png' },
+  { caption: 'CLI Calculator', src: '/images/frames/cli-c-calculator.png' },
+  { caption: 'Fhir Tech', src: '/images/frames/fgit-tech.png' },
 ];
 
 export function SMyWay() {

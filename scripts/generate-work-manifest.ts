@@ -7,6 +7,22 @@ const manifestPath = path.join(process.cwd(), 'src', 'data', 'workManifest.json'
 // Supported extensions
 const supportedExtensions = ['.mp4', '.webm', '.mov', '.m4v'];
 
+// Custom live deployment URLs
+const CUSTOM_LIVE_URLS: Record<string, string> = {
+  'Fhir-Tech': 'https://fhir-tech.vercel.app/',
+  'Simple-Wether': 'https://simplewether.vercel.app/',
+  'To_Do_APP': 'https://taskflow-iota-puce.vercel.app/',
+  'ECommerce_Store': 'https://nextgen-delta-orpin.vercel.app/',
+  'ECommerse_Store': 'https://nextgen-delta-orpin.vercel.app/',
+  'Calculator(Web)': 'https://apexcompute.vercel.app/',
+  'Healthcare_AI_Prototype': 'https://healthcare-ai-nu.vercel.app/',
+  'Portfolio': 'https://portfolio2k26.vercel.app/',
+};
+
+function getExternalUrl(nameWithoutExt: string): string {
+  return CUSTOM_LIVE_URLS[nameWithoutExt] || `https://github.com/Mr-Anonymous-Guy/${nameWithoutExt}`;
+}
+
 // Format titles
 function formatTitle(filename: string): string {
   const nameWithoutExt = filename.replace(/\.[^/.]+$/, "");
@@ -69,12 +85,14 @@ function generateManifest() {
   const newManifest = videoFiles.map(file => {
     const nameWithoutExt = file.replace(/\.[^/.]+$/, "");
     const id = nameWithoutExt.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const targetUrl = getExternalUrl(nameWithoutExt);
     
     // Check if item already exists
     if (existingMap.has(id)) {
       const existing = existingMap.get(id);
       // Ensure the video path is correct in case the file extension changed
       existing.video = `/works/${file}`;
+      existing.externalUrl = targetUrl;
       return existing;
     }
 
@@ -92,7 +110,7 @@ function generateManifest() {
       status: "completed",
       year: new Date().getFullYear(),
       displayOrder: 0,
-      externalUrl: "https://github.com/Mr-Anonymous-Guy",
+      externalUrl: targetUrl,
       buttonLabel: "View Project"
     };
   });
