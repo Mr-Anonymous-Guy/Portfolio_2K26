@@ -70,12 +70,16 @@
 }
 
 :root {
+  /* Dynamic Palette Color Defaults (Pair 1: Ember & Apricot) */
+  --palette-contrast: #ff004d;
+  --palette-root: #ffc6a8;
+
   /* Original Brand Color Variables */
-  --paper: #ffc6a8;
+  --paper: var(--palette-root);
   --bone: rgba(0, 0, 0, 0.05);
   --ink: #0d0004;
   --cocoa: #210006;
-  --ember: #ff004d;
+  --ember: var(--palette-contrast);
   --mute: #ffeee6;
   --border: rgba(13, 0, 4, 0.15);
   --divider: rgba(13, 0, 4, 0.1);
@@ -92,10 +96,10 @@
   --bg-surface: var(--surface);
   --bg-surface-secondary: rgba(0, 0, 0, 0.08);
   --text-hero-display: var(--ember);
-  /* heading 'MICHAEL' is dark ink in normal mode */
+  /* heading is accent color in normal mode */
   --accent-red: var(--ember);
   --hero-orange: var(--ember);
-  /* map Hero orange to brand red/accent */
+  /* map Hero accent */
   --border-color: var(--border);
   --hover-bg: var(--ember);
   --overlay-bg: rgba(255, 255, 255, 0.85);
@@ -114,10 +118,34 @@
   --muted-ink: var(--text-secondary);
 }
 
+/* Palette 1: Ember & Apricot (Current Base) */
+[data-palette="ember"] {
+  --palette-contrast: #ff004d;
+  --palette-root: #ffc6a8;
+}
+
+/* Palette 2: Cranberry & Powder */
+[data-palette="cranberry"] {
+  --palette-contrast: #b51e4b;
+  --palette-root: #a8d8ea;
+}
+
+/* Palette 3: Cobalt & Apricot */
+[data-palette="cobalt"] {
+  --palette-contrast: #2455e6;
+  --palette-root: #ffb07c;
+}
+
+/* Palette 4: Sienna & Mint */
+[data-palette="sienna"] {
+  --palette-contrast: #b85c38;
+  --palette-root: #c7e8d5;
+}
+
 .theme-red,
 .is-contrast {
   /* Restored Original Contrast Colors */
-  --paper: #ff004d;
+  --paper: var(--palette-contrast);
   --bone: rgba(255, 255, 255, 0.08);
   --ink: #0d0004;
   --cocoa: #210006;
@@ -138,12 +166,12 @@
   --bg-surface: var(--surface);
   --bg-surface-secondary: rgba(255, 255, 255, 0.12);
   --text-hero-display: var(--ember);
-  /* heading 'MICHAEL' is white in contrast mode */
+  /* heading is white in contrast mode */
   --accent-red: var(--ember);
   --hero-orange: var(--paper);
   --border-color: var(--border);
   --hover-bg: var(--ember);
-  --overlay-bg: rgba(255, 0, 77, 0.85);
+  --overlay-bg: rgba(0, 0, 0, 0.85);
   --grid-color: rgba(13, 0, 4, 0.15);
   --highlight-color: var(--ember);
   --shadow-color: rgba(0, 0, 0, 0.3);
@@ -490,6 +518,23 @@ html.lenis body {
   object-fit: cover;
   will-change: transform, filter;
   transform-origin: center center;
+}
+
+.img-contain-reveal {
+  overflow: visible !important;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.img-contain-reveal img {
+  width: auto !important;
+  height: auto !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  object-fit: contain !important;
+  will-change: transform, filter;
 }
 
 /* === Marquee hover dimming === */

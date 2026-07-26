@@ -5,7 +5,7 @@ import { AnimatedCounter } from "@/components/shared/AnimatedCounter";
 import { Asterisk } from "@/features/Hero/SourceHero";
 import Shuffle from "@/components/shared/Shuffle";
 
-const impactFigure = "/images/impact-figure.jpg";
+const impactFigure = "/images/Figure.webp";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -38,10 +38,10 @@ export function SourceIntroduction() {
 
     const images = root.querySelectorAll("[data-reveal-image]");
     images.forEach((img) => {
-      const wrapper = img.closest(".img-reveal") || img.parentElement;
+      const wrapper = img.closest(".img-contain-reveal") || img.closest(".img-reveal") || img.parentElement;
       gsap.set(img, {
-        scale: 1.08,
-        filter: "blur(8px)",
+        scale: 1.0,
+        filter: "blur(6px)",
         opacity: 0,
       });
 
@@ -51,7 +51,7 @@ export function SourceIntroduction() {
         once: true,
         onEnter: () => {
           gsap.to(img, {
-            scale: 1,
+            scale: 1.0,
             filter: "blur(0px)",
             opacity: 1,
             duration: 1.2,
@@ -77,7 +77,7 @@ export function SourceIntroduction() {
           <Asterisk className="h-3 w-3 text-accent" />
           <Shuffle text="WHO I AM" tag="span" />
         </div>
-        <div className="grid gap-12 lg:grid-cols-12">
+        <div className="grid gap-12 lg:grid-cols-12 items-center">
           <h2 className="reveal font-display text-[clamp(36px,5.4vw,84px)] lg:col-span-7">
             <Shuffle text="BUILDING" tag="span" />
             <br />
@@ -87,9 +87,15 @@ export function SourceIntroduction() {
             <br />
             <Shuffle text="PRODUCTS" tag="span" />
           </h2>
-          <div className="reveal lg:col-span-5">
-            <div className="aspect-[4/5] w-full max-w-[280px] overflow-hidden bg-accent img-reveal">
-              <img src={impactFigure} data-reveal-image alt="" className="h-full w-full object-cover" loading="lazy" />
+          <div className="reveal lg:col-span-5 flex items-center justify-center w-full min-h-[320px] lg:min-h-[400px] p-2 overflow-visible">
+            <div className="relative w-full max-w-[420px] lg:max-w-[440px] flex items-center justify-center overflow-visible img-contain-reveal">
+              <img
+                src={impactFigure}
+                data-reveal-image
+                alt="Figure"
+                className="w-full h-auto max-h-[420px] lg:max-h-[440px] object-contain drop-shadow-2xl"
+                loading="eager"
+              />
             </div>
           </div>
         </div>
